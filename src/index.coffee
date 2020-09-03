@@ -4,8 +4,9 @@ import axiosRetry from 'axios-retry'
 import chalk from 'chalk'
 import axios from 'axios'
 
-axios.defaults.timeout = TIMEOUT
-TIMEOUT = 60000
+{defaults} = axios
+
+defaults.timeout = 30000
 
 axiosRetry(
   axios
@@ -19,7 +20,6 @@ reject = (error) =>
 
 axios.interceptors.request.use(
   (config) =>
-    console.log config
     # 参考 ： 超时不起作用·问题＃647·axios / axios : https://t.cn/A6UgrogG
     {cancelToken,timeout} = config
 
@@ -28,7 +28,7 @@ axios.interceptors.request.use(
     token.timer = setTimeout(
       =>
         source.cancel('timeout')
-      timeout or TIMEOUT
+      timeout or defaults.timeout
     )
     config.cancelToken = token
     return config
