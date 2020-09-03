@@ -1,15 +1,16 @@
-# @rmw/xxx
+# @rmw/axios
 
 ##  安装
 
 ```
-npm install @rmw/xxx
+npm install @rmw/axios
 ```
 
 ## 使用
 
-```
-```
+给 axios 添加了 超时 ( 参考 Timeout doesn't work · Issue #647 · axios/axios : https://t.cn/A6UgrogG )
+
+具体用法参考 https://github.com/axios/axios
 
 ## 关于
 
