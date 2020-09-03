@@ -1,7 +1,7 @@
 {
-  "name": "@rmw/xxx",
+  "name": "@rmw/axios",
   "version": "0.0.0",
-  "repository": "https://github.com/rmw-lib/xxx",
+  "repository": "https://github.com/rmw-lib/axios",
   "author": "i@rmw.link",
   "license": "MulanPSL-2.0",
   "exports": {
@@ -11,7 +11,10 @@
   "files": [
     "/lib"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.20.0",
+    "axios-retry": "^3.1.8"
+  },
   "devDependencies": {
     "coffeescript": "^2.5.1",
     "colortape": "^0.1.2",
