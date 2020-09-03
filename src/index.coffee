@@ -4,7 +4,7 @@ import chalk from 'chalk'
 import axios from 'axios'
 import sleep from 'await-sleep'
 
-{defaults} = axios
+{defaults, Cancel, CancelToken} = axios
 
 defaults.timeout = 30000
 defaults.retry = 3
@@ -12,8 +12,6 @@ defaults.retryDelay = 3000
 
 reject = (error) =>
   return Promise.reject(error)
-
-{CancelToken} = axios
 
 axios.interceptors.request.use(
   (config) =>
@@ -43,6 +41,8 @@ axios.Axios::request = (config)->
       r = await request.call(@,config)
       break
     catch err
+      if err instanceof Cancel
+        err = err.message
       _config = err.config
       if 'retry' not of config
         config.retry = _config.retry
