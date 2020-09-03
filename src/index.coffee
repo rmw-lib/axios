@@ -1,17 +1,14 @@
 #!/usr/bin/env coffee
 
-import axiosRetry from 'axios-retry'
 import chalk from 'chalk'
 import axios from 'axios'
+import sleep from 'await-sleep'
 
 {defaults} = axios
 
 defaults.timeout = 30000
-
-axiosRetry(
-  axios
-  retries: 3
-)
+defaults.retry = 3
+defaults.retryDelay = 3000
 
 reject = (error) =>
   return Promise.reject(error)
@@ -34,12 +31,35 @@ axios.interceptors.request.use(
     return config
   reject
 )
-axios.interceptors.response.use(
-  (response)->
-    clearTimeout response.config.cancelToken.timer
-    return response
-  reject
-)
+
+request = axios.Axios::request
+
+axios.Axios::request = (config)->
+  while 1
+    try
+      r = await request.call(@,config)
+      break
+    catch err
+      _config = err.config
+      if 'retry' not of config
+        config.retry = _config.retry
+
+      console.error(
+        chalk.redBright err.code
+        chalk.gray config.method
+        chalk.blueBright config.url
+      )
+      clearTimeout  _config.cancelToken.timer
+      if not --config.retry
+        throw err
+
+      await sleep _config.retryDelay
+
+  _config = r.config
+  clearTimeout _config.cancelToken.timer
+  delete _config.cancelToken
+
+  return r
 
 export default axios
 
