@@ -24,7 +24,10 @@ axios.interceptors.request.use(
     {token} = source
     token.timer = setTimeout(
       =>
-        source.cancel('timeout')
+        source.cancel({
+          code:'TIMEOUT'
+          config
+        })
       timeout or defaults.timeout
     )
     config.cancelToken = token
