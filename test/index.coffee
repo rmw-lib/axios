@@ -4,6 +4,6 @@ import test from 'tape'
 
 
 test 'axios', (t)=>
-  r = await axios.get("http://z.cn")
-  console.log Object.keys r
+  r = await axios.get("http://baidu.com")
+  console.log r.data
   t.end()

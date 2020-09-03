@@ -43,29 +43,3 @@ axios.interceptors.response.use(
 
 export default axios
 
-# ERR_IGNORE = new Set(['ECONNRESET','ECONNABORTED'])
-
-# request = axios.Axios::request
-# axios.Axios::request = (method)=>
-#   (url, opt)=>
-#     if typeof(url)=="string"
-#       opt = opt or {}
-#       opt.url = url
-#     else
-#       opt = url
-#     # axios 的 response timeout 不是 connection timeout
-#     source = axios.CancelToken.source()
-#     timer = setTimeout(
-#       => source.cancel('timeout')
-#       opt.timeout or TIMEOUT
-#     )
-#     try
-#       r = await axios {
-#         method
-#         cancelToken: source.token
-#         ...opt
-#       }
-#     finally
-#       clearTimeout timer
-#     return r
-#
