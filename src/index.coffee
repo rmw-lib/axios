@@ -47,11 +47,11 @@ axios.Axios::request = (config)->
       if 'retry' not of config
         config.retry = _config.retry
 
-      console.error(
-        chalk.redBright err.code
-        chalk.gray config.method
-        chalk.blueBright config.url
-      )
+      # console.error(
+      #   chalk.redBright err.code
+      #   chalk.gray config.method
+      #   chalk.blueBright config.url
+      # )
       clearTimeout  _config.cancelToken.timer
       if not --config.retry
         throw err
