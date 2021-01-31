@@ -2,4 +2,8 @@
 
 _DIR=$(dirname $(realpath "$0"))
 
-exec node  --trace-warnings --es-module-specifier-resolution=node --trace-uncaught --expose-gc --experimental-loader "$_DIR/coffee-loader.mjs" --unhandled-rejections=strict $@
+filepath=$(realpath $@)
+
+cd $(dirname $filepath)/..
+
+exec node  --trace-warnings --es-module-specifier-resolution=node --trace-uncaught --expose-gc --experimental-loader "$_DIR/coffee-loader.mjs" --unhandled-rejections=strict $filepath
