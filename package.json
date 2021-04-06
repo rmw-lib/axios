@@ -20,7 +20,7 @@
     "coffeescript": "^2.5.1",
     "colortape": "^0.1.2",
     "nodemon": "^2.0.7",
-    "tape": "^5.1.1"
+    "tape": "^5.2.2"
   },
   "scripts": {
     "prepare": "rm -rf lib && rsync -av --include='*/' --include='*.js' --exclude=* src/ lib/ && npx coffee --compile --output lib src/"
