@@ -13,25 +13,37 @@ defaults.retryDelay = 3000
 reject = (error) =>
   return Promise.reject(error)
 
-axios.interceptors.request.use(
-  (config) =>
-    # 参考 ： 超时不起作用·问题＃647·axios / axios : https://t.cn/A6UgrogG
-    {cancelToken,timeout} = config
+export timeout = (config) =>
+  # 参考 ： 超时不起作用·问题＃647·axios / axios : https://t.cn/A6UgrogG
+  {cancelToken,timeout} = config
 
-    source = cancelToken or CancelToken.source()
-    {token} = source
-    token.timer = setTimeout(
-      =>
-        source.cancel({
-          code:'TIMEOUT'
-          config
-        })
-      timeout or defaults.timeout
-    )
-    config.cancelToken = token
-    return config
+  source = cancelToken or CancelToken.source()
+  {token} = source
+  token.timer = setTimeout(
+    =>
+      source.cancel({
+        code:'TIMEOUT'
+        config
+      })
+    timeout or defaults.timeout
+  )
+  config.cancelToken = token
+  return config
+
+axios.interceptors.request.use(
+  timeout
   reject
 )
+
+create = axios.create
+
+axios.create = ->
+  a = create.apply @,arguments
+  a.interceptors.request.use(
+    timeout
+    reject
+  )
+  return a
 
 request = axios.Axios::request
 
