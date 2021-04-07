@@ -46,8 +46,6 @@ axios.Axios::request = (config)->
     catch err
       if err instanceof Cancel
         err = err.message
-      _config = err.config
-
       console.error(
         chalk.gray "axios"
         chalk.gray config.method
