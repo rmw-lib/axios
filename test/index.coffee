@@ -1,7 +1,6 @@
 #!/usr/bin/env coffee
 
 import axios from '../src/index'
-# import test from 'tape'
 
 do =>
   r = await axios.get("http://baidu.com")

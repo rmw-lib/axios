@@ -13,42 +13,33 @@ defaults.retryDelay = 3000
 reject = (error) =>
   return Promise.reject(error)
 
-export timeout = (config) =>
-  # 参考 ： 超时不起作用·问题＃647·axios / axios : https://t.cn/A6UgrogG
-  {cancelToken,timeout} = config
 
-  source = cancelToken or CancelToken.source()
-  {token} = source
-  token.timer = setTimeout(
-    =>
-      source.cancel({
-        code:'TIMEOUT'
-        config
-      })
-    timeout or defaults.timeout
-  )
-  config.cancelToken = token
-  return config
 
-axios.interceptors.request.use(
-  timeout
-  reject
-)
-
-create = axios.create
-
-axios.create = ->
-  a = create.apply @,arguments
-  a.interceptors.request.use(
-    timeout
-    reject
-  )
-  return a
 
 request = axios.Axios::request
 
 axios.Axios::request = (config)->
-  while 1
+  {cancelToken,timeout,retry, retryDelay} = config
+
+  timeout = timeout or defaults.timeout
+  retry = retry or defaults.retry
+  retryDelay = retryDelay or defaults.retryDelay
+
+  source = CancelToken.source()
+  {token} = source
+  config.CancelToken = token
+  if cancelToken
+    cancelToken.promise.then source.cancel
+
+  loop
+    timer = setTimeout(
+      =>
+        source.cancel({
+          code:'TIMEOUT'
+          config
+        })
+      timeout
+    )
     try
       r = await request.call(@,config)
       break
@@ -56,24 +47,21 @@ axios.Axios::request = (config)->
       if err instanceof Cancel
         err = err.message
       _config = err.config
-      if 'retry' not of config
-        config.retry = _config.retry
 
-      # console.error(
-      #   chalk.redBright err.code
-      #   chalk.gray config.method
-      #   chalk.blueBright config.url
-      # )
-      clearTimeout  _config.cancelToken.timer
-      if not --config.retry
+      console.error(
+        chalk.gray "axios"
+        chalk.gray config.method
+        chalk.redBright err.code
+        chalk.blueBright config.url
+      )
+      if --retry <= 0
         throw err
 
-      await sleep _config.retryDelay
-
-  _config = r.config
-  clearTimeout _config.cancelToken.timer
-  delete _config.cancelToken
-
+      await sleep retryDelay
+    finally
+      clearTimeout timer
+  if not cancelToken
+    delete config.cancelToken
   return r
 
 export default axios
