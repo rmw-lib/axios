@@ -49,7 +49,7 @@ axios.Axios::request = (config)->
       console.error(
         chalk.gray "axios"
         chalk.gray config.method
-        chalk.redBright err.code
+        chalk.redBright err.response.status
         chalk.blueBright config.url
       )
       if --retry <= 0
