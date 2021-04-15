@@ -52,6 +52,7 @@ axios.Axios::request = (config)->
         chalk.redBright err.response.status
         chalk.blueBright config.url
       )
+      console.error(err.response.data)
       if --retry <= 0
         throw err
 
