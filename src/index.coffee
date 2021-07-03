@@ -46,13 +46,21 @@ axios.Axios::request = (config)->
     catch err
       if err instanceof Cancel
         err = err.message
+
+      response = err.response
+      if response
+        status = response.status
+      else
+        status = err
+
       console.error(
         chalk.gray "axios"
         chalk.gray config.method
-        chalk.redBright err.response.status
+        chalk.redBright status
         chalk.blueBright config.url
       )
-      console.error(err.response.data)
+      if response
+        console.error(response.data)
       if --retry <= 0
         throw err
 
